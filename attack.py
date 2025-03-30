@@ -2,6 +2,10 @@ import torch
 import torch.nn.functional as F
 
 def fgsm_targeted(model, x, target, eps):
+    """
+    타깃 FGSM 공격 구현
+    입력 이미지를 목표 클래스로 분류되도록 조작
+    """
     x_adv = x.clone().detach().requires_grad_(True)
     output = model(x_adv)
     loss = F.cross_entropy(output, target)
@@ -14,6 +18,10 @@ def fgsm_targeted(model, x, target, eps):
     return x_adv
 
 def fgsm_untargeted(model, x, label, eps):
+    """
+    언타깃 FGSM 공격 구현
+    입력 이미지가 정답 클래스로 분류되지 않도록 조작
+    """
     x_adv = x.clone().detach().requires_grad_(True)
     output = model(x_adv)
     loss = F.cross_entropy(output, label)
@@ -25,6 +33,10 @@ def fgsm_untargeted(model, x, label, eps):
     return x_adv
 
 def pgd_targeted(model, x, target, k, eps, eps_step):
+    """
+    타깃 PGD 공격 구현 (반복적 FGSM)
+    k번의 반복을 통해 입력 이미지를 목표 클래스로 분류되도록 조작
+    """
     x_adv = x.clone().detach()
     # 옵션: 초기값에 작은 random noise 추가
     x_adv = x_adv + torch.zeros_like(x_adv).uniform_(-eps, eps)
@@ -44,6 +56,10 @@ def pgd_targeted(model, x, target, k, eps, eps_step):
     return x_adv
 
 def pgd_untargeted(model, x, label, k, eps, eps_step):
+    """
+    언타깃 PGD 공격 구현 (반복적 FGSM)
+    k번의 반복을 통해 입력 이미지가 정답 클래스로 분류되지 않도록 조작
+    """
     x_adv = x.clone().detach()
     # 옵션: 초기값에 작은 random noise 추가
     x_adv = x_adv + torch.zeros_like(x_adv).uniform_(-eps, eps)

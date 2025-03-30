@@ -8,6 +8,10 @@ from model import MNISTModel, CIFAR10Model
 import attack  # attack.py에 정의한 공격 함수 임포트
 
 def train(model, device, train_loader, optimizer, epoch):
+    """
+    모델 학습 함수: 한 epoch 동안 모델을 학습시킴
+    100 배치마다 loss를 출력하여 학습 진행 상황을 보여줌
+    """
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -20,6 +24,10 @@ def train(model, device, train_loader, optimizer, epoch):
             print(f'Epoch {epoch} [{batch_idx*len(data)}/{len(train_loader.dataset)}] Loss: {loss.item():.6f}')
 
 def test(model, device, test_loader):
+    """
+    모델 테스트 함수: 테스트셋에 대한 정확도 계산
+    전체 테스트셋에 대한 평균 loss와 정확도를 반환
+    """
     model.eval()
     test_loss = 0
     correct = 0
@@ -36,6 +44,10 @@ def test(model, device, test_loader):
     return accuracy
 
 def test_attacks(model, device, test_loader, dataset_name="MNIST"):
+    """
+    adversarial 공격 테스트 함수: FGSM과 PGD 공격 성공률 측정
+    각 공격 방법(FGSM/PGD, 타깃/언타깃)에 대한 성공률을 계산하고 출력
+    """
     data, target = next(iter(test_loader))
     data, target = data.to(device), target.to(device)
 
